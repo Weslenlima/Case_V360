@@ -16,6 +16,6 @@ Ele permite criar listas com título e descrição, adicionar tarefas com títul
 
 ## Tecnologias utilizadas
 
-- Ruby 3.x  
-- Ruby on Rails 7.x  
+- Ruby
+- Ruby on Rails
 - PostgreSQL 
