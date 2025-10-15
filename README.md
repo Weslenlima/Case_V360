@@ -1,7 +1,5 @@
 # ToDo_Case_V360
 
-# To-Do List Rails
-
 ## Descrição
 
 Este é um sistema de **To-Do List** desenvolvido em **Ruby on Rails**, com o objetivo de organizar listas e tarefas de forma prática e intuitiva.  
