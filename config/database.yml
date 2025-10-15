@@ -49,3 +49,11 @@ cable:
   username: <%= ENV.fetch("V360_CASE_DATABASE_USER") %>
   password: <%= ENV.fetch("V360_CASE_DATABASE_PASSWORD") %>
   port: <%= ENV.fetch("V360_CASE_DATABASE_PORT") %>
+
+queue:
+  <<: *default
+  database: <%= ENV.fetch("V360_CASE_DATABASE_NAME") %>
+  host: <%= ENV.fetch("V360_CASE_DATABASE_HOST") %>
+  username: <%= ENV.fetch("V360_CASE_DATABASE_USER") %>
+  password: <%= ENV.fetch("V360_CASE_DATABASE_PASSWORD") %>
+  port: <%= ENV.fetch("V360_CASE_DATABASE_PORT") %>
