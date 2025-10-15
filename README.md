@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ToDo_Case_V360
 
 ## Descrição
@@ -10,39 +9,19 @@ Ele permite criar listas com título e descrição, adicionar tarefas com títul
 
 - Criar, editar e excluir listas.  
 - Adicionar, editar e remover tarefas dentro de cada lista.  
-- Marcar e desmarcar tarefas como concluídas via **AJAX**.  
+- Marcar e desmarcar tarefas como concluídas.
 - Adicionar data de conclusão para cada tarefa.  
-- Layout responsivo e estilizado baseado no portal do fornecedor.  
-- Organização de commits e tarefas no GitHub Project (Kanban).
+
 
 ## Tecnologias utilizadas
 
 - Ruby
 - Ruby on Rails
 - PostgreSQL 
+
+## Autenticação
+
+- Sistema de login e logout de usuários.  
+- Criação de conta de usuário com email e senha.  
+- Cada usuário só consegue visualizar e gerenciar suas próprias listas e tarefas.  
 =======
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
->>>>>>> c5886bb (primeira_versao)
