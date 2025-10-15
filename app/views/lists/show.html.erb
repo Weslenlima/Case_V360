@@ -1,0 +1,60 @@
+<div style="max-width:800px; margin:50px auto; background:#FFFFFF; padding:40px; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.08); font-family:'Roboto', sans-serif;">
+  <!-- Cabeçalho -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+    <h1 style="color:#003366; font-weight:700; font-size:26px; margin:0;"><%= @list.title %></h1>
+    <span style="color:#64748B; font-size:14px;">Criada em <%= @list.created_at.strftime("%d/%m/%Y") %></span>
+  </div>
+
+  <!-- Descrição -->
+  <% if @list.description.present? %>
+    <p style="color:#475569; font-size:15px; background:#F8FAFC; padding:12px 16px; border-radius:8px; border-left:4px solid #007BFF; margin-bottom:25px;">
+      <%= @list.description %>
+    </p>
+  <% end %>
+
+  <!-- Tarefas -->
+  <h3 style="color:#003366; margin-bottom:15px; font-weight:600;">📝 Tarefas</h3>
+
+  <% if @todos.any? %>
+    <ul style="list-style:none; padding:0; margin:0;">
+      <% @todos.each do |todo| %>
+        <li style="display:flex; justify-content:space-between; align-items:center; background:#F9FAFB; padding:14px 18px; border:1px solid #E2E8F0; border-radius:10px; margin-bottom:10px; transition:all .3s ease;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <%= form_with url: toggle_list_todo_path(@list, todo), method: :patch, local: true do |f| %>
+              <%= f.check_box :completed, checked: todo.completed, onchange: "this.form.submit();", style:"transform:scale(1.3); cursor:pointer; accent-color:#007BFF;" %>
+            <% end %>
+
+            <% if todo.completed %>
+              <span style="text-decoration:line-through; color:#94A3B8; font-size:15px;"><%= todo.title %></span>
+            <% else %>
+              <span style="color:#1E293B; font-size:15px;"><%= todo.title %></span>
+            <% end %>
+          </div>
+
+          <!-- Data de conclusão -->
+          <% if todo.due_date.present? %>
+            <span style="font-size:13px; color:#475569;">
+              🗓️ <%= todo.due_date.strftime("%d/%m/%Y") %>
+            </span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p style="color:#94A3B8; font-style:italic;">Nenhuma tarefa cadastrada ainda.</p>
+  <% end %>
+
+  <!-- Ações -->
+  <div style="display:flex; justify-content:center; gap:15px; margin-top:40px;">
+    <%= link_to "✏️ Editar Lista", edit_list_path(@list),
+      style:"background:#007BFF; color:#fff; padding:12px 26px; border-radius:10px; text-decoration:none; font-weight:600; transition:background .3s ease;" %>
+
+    <%= button_to "🗑️ Excluir Lista", list_path(@list),
+      method: :delete,
+      data: { confirm: "Deseja realmente excluir esta lista?" },
+      style:"background:#FF4C4C; color:#fff; padding:12px 26px; border:none; border-radius:10px; cursor:pointer; font-weight:600; transition:background .3s ease;" %>
+
+    <%= link_to "⬅️ Ok", lists_path,
+      style:"background:#E2E8F0; color:#1E293B; padding:12px 26px; border-radius:10px; text-decoration:none; font-weight:600; transition:background .3s ease;" %>
+  </div>
+</div>

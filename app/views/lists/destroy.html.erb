@@ -1,0 +1,15 @@
+<div style="max-width:500px; margin:100px auto; background:#fff; padding:30px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-family:'Roboto', sans-serif; text-align:center;">
+
+  <h1 style="color:#FF4C4C; margin-bottom:20px;">Excluir Lista</h1>
+  <p style="color:#7F8C8D; margin-bottom:30px;">
+    Tem certeza que deseja excluir a lista "<strong><%= @list.title %></strong>"?
+    <br>
+    <span style="font-size:14px;">Essa ação não pode ser desfeita.</span>
+  </p>
+
+  <div style="display:flex; justify-content:center; gap:20px;">
+    <%= link_to "Cancelar", lists_path, style:"padding:10px 20px; background:#3399FF; color:#fff; border-radius:5px; text-decoration:none; font-weight:500;" %>
+
+    <%= button_to "Excluir", list_path(@list), method: :delete, data: { confirm: "Deseja realmente excluir?" }, style:"padding:10px 20px; background:#FF4C4C; color:#fff; border:none; border-radius:5px; font-weight:500; cursor:pointer;" %>
+  </div>
+</div>

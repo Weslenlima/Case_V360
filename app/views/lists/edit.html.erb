@@ -1,0 +1,64 @@
+<div style="max-width:700px; margin:50px auto; background:#fff; padding:40px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.1); font-family:'Roboto', sans-serif;">
+  <h1 style="text-align:center; color:#003366; margin-bottom:30px; font-weight:700;">Editar Lista</h1>
+
+  <%= form_with model: @list, local: true do |f| %>
+    <!-- Título da Lista -->
+    <div style="margin-bottom:25px;">
+      <%= f.label :title, "Título da Lista", style:"display:block; margin-bottom:8px; font-weight:600; color:#1E3A8A;" %>
+      <%= f.text_field :title, placeholder: "Ex: Compras semanais", style:"width:100%; padding:12px; border:1px solid #D1D5DB; border-radius:8px; font-size:16px;" %>
+    </div>
+
+    <!-- Descrição da Lista -->
+    <div style="margin-bottom:25px;">
+      <%= f.label :description, "Descrição (opcional)", style:"display:block; margin-bottom:8px; font-weight:600; color:#1E3A8A;" %>
+      <%= f.text_area :description, placeholder:"Descrição da lista", style:"width:100%; padding:12px; border:1px solid #D1D5DB; border-radius:8px; min-height:100px; font-size:15px;" %>
+    </div>
+
+    <!-- Container do título + botão -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+      <h3 style="color:#003366; font-weight:600; margin:0;">Tarefas</h3>
+      <button type="button" onclick="addTodoField();" style="background:#008000; color:#fff; padding:8px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:500;">
+        + Adicionar Tarefa
+      </button>
+    </div>
+
+    <!-- Campos de tarefas -->
+    <div id="todos-fields" style="margin-bottom:30px;">
+      <%= f.fields_for :todos do |todo| %>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; padding:10px; border:1px solid #E5E7EB; border-radius:8px; background:#F9FAFB;">
+          <%= todo.check_box :completed, style:"margin-top:3px; cursor:pointer;" %>
+          <%= todo.text_field :title, placeholder:"Título da tarefa", style:"flex:2; padding:10px; border:1px solid #D1D5DB; border-radius:6px; font-size:14px;" %>
+          <%= todo.date_field :due_date, style:"flex:1; padding:8px; border:1px solid #D1D5DB; border-radius:6px;" %>
+          <label style="display:flex; align-items:center; gap:5px; color:#FF4C4C; cursor:pointer;">
+            <%= todo.check_box :_destroy %> Remover
+          </label>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Botões -->
+    <div style="text-align:center; margin-top:35px; display:flex; justify-content:center; gap:15px;">
+      <%= f.submit "Atualizar Lista", style:"background-color:#3399FF; color:#fff; padding:12px 28px; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:16px;" %>
+      <%= link_to "Voltar", list_path(@list), style:"background:#FF4C4C; color:#fff; padding:12px 28px; border-radius:8px; text-decoration:none; font-weight:600; font-size:16px; display:inline-block;" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  // Função JS para adicionar novo campo de tarefa dinamicamente
+  function addTodoField() {
+    const container = document.getElementById('todos-fields');
+    const index = container.querySelectorAll('input[name*="todos"]').length;
+    const div = document.createElement('div');
+    div.style = "display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; padding:10px; border:1px solid #E5E7EB; border-radius:8px; background:#F9FAFB;";
+    div.innerHTML = `
+      <input type="checkbox" name="list[todos_attributes][${index}][completed]" style="margin-top:3px;">
+      <input type="text" name="list[todos_attributes][${index}][title]" placeholder="Título da tarefa" style="flex:2; padding:10px; border:1px solid #D1D5DB; border-radius:6px; font-size:14px;">
+      <input type="date" name="list[todos_attributes][${index}][due_date]" style="flex:1; padding:8px; border:1px solid #D1D5DB; border-radius:6px;">
+      <label style="display:flex; align-items:center; gap:5px; color:#FF4C4C; cursor:pointer;">
+        <input type="checkbox" name="list[todos_attributes][${index}][_destroy]"> Remover
+      </label>
+    `;
+    container.appendChild(div);
+  }
+</script>
