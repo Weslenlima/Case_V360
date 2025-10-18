@@ -10,15 +10,17 @@ port ENV.fetch("PORT") { 3000 }
 # Ambiente (production no Render)
 environment ENV.fetch("RAILS_ENV") { "production" }
 
-# Número de workers (processos) — ideal para plano gratuito é 2 ou menos
-workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+# Número de workers (processos) — só habilita se não for Windows
+if RUBY_PLATFORM !~ /mswin|mingw|cygwin/
+  workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 
-# Preload para economizar memória e acelerar inicialização
-preload_app!
+  # Preload para economizar memória e acelerar inicialização
+  preload_app!
 
-# Reconectar ao banco em cada worker
-on_worker_boot do
-  ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+  # Reconectar ao banco em cada worker
+  on_worker_boot do
+    ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+  end
 end
 
 # Permite reiniciar Puma com `rails restart`
