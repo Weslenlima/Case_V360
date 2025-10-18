@@ -2,19 +2,16 @@
   <h1 style="text-align:center; color:#003366; margin-bottom:30px; font-weight:700;">Editar Lista</h1>
 
   <%= form_with model: @list, local: true do |f| %>
-    <!-- Título da Lista -->
     <div style="margin-bottom:25px;">
       <%= f.label :title, "Título da Lista", style:"display:block; margin-bottom:8px; font-weight:600; color:#1E3A8A;" %>
       <%= f.text_field :title, placeholder: "Ex: Compras semanais", style:"width:100%; padding:12px; border:1px solid #D1D5DB; border-radius:8px; font-size:16px;" %>
     </div>
 
-    <!-- Descrição da Lista -->
     <div style="margin-bottom:25px;">
       <%= f.label :description, "Descrição (opcional)", style:"display:block; margin-bottom:8px; font-weight:600; color:#1E3A8A;" %>
       <%= f.text_area :description, placeholder:"Descrição da lista", style:"width:100%; padding:12px; border:1px solid #D1D5DB; border-radius:8px; min-height:100px; font-size:15px;" %>
     </div>
 
-    <!-- Container do título + botão -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
       <h3 style="color:#003366; font-weight:600; margin:0;">Tarefas</h3>
       <button type="button" onclick="addTodoField();" style="background:#008000; color:#fff; padding:8px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:500;">
@@ -22,13 +19,12 @@
       </button>
     </div>
 
-    <!-- Campos de tarefas -->
     <div id="todos-fields" style="margin-bottom:30px;">
       <%= f.fields_for :todos do |todo| %>
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; padding:10px; border:1px solid #E5E7EB; border-radius:8px; background:#F9FAFB;">
+        <div class="todo-item" style="display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; padding:10px; border:1px solid #E5E7EB; border-radius:8px; background:#F9FAFB;">
           <%= todo.check_box :completed, style:"margin-top:3px; cursor:pointer;" %>
           <%= todo.text_field :title, placeholder:"Título da tarefa", style:"flex:2; padding:10px; border:1px solid #D1D5DB; border-radius:6px; font-size:14px;" %>
-          <%= todo.date_field :due_date, style:"flex:1; padding:8px; border:1px solid #D1D5DB; border-radius:6px;" %>
+          <%= todo.date_field :due_date, class:"due-date", style:"flex:1; padding:8px; border:1px solid #D1D5DB; border-radius:6px;" %>
           <label style="display:flex; align-items:center; gap:5px; color:#FF4C4C; cursor:pointer;">
             <%= todo.check_box :_destroy %> Remover
           </label>
@@ -36,7 +32,6 @@
       <% end %>
     </div>
 
-    <!-- Botões -->
     <div style="text-align:center; margin-top:35px; display:flex; justify-content:center; gap:15px;">
       <%= f.submit "Atualizar Lista", style:"background-color:#3399FF; color:#fff; padding:12px 28px; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:16px;" %>
       <%= link_to "Voltar", list_path(@list), style:"background:#FF4C4C; color:#fff; padding:12px 28px; border-radius:8px; text-decoration:none; font-weight:600; font-size:16px; display:inline-block;" %>
@@ -45,20 +40,53 @@
 </div>
 
 <script>
-  // Função JS para adicionar novo campo de tarefa dinamicamente
+  // 🔹 Adiciona nova tarefa dinamicamente
   function addTodoField() {
     const container = document.getElementById('todos-fields');
     const index = container.querySelectorAll('input[name*="todos"]').length;
     const div = document.createElement('div');
+    div.classList.add('todo-item');
     div.style = "display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; padding:10px; border:1px solid #E5E7EB; border-radius:8px; background:#F9FAFB;";
     div.innerHTML = `
       <input type="checkbox" name="list[todos_attributes][${index}][completed]" style="margin-top:3px;">
       <input type="text" name="list[todos_attributes][${index}][title]" placeholder="Título da tarefa" style="flex:2; padding:10px; border:1px solid #D1D5DB; border-radius:6px; font-size:14px;">
-      <input type="date" name="list[todos_attributes][${index}][due_date]" style="flex:1; padding:8px; border:1px solid #D1D5DB; border-radius:6px;">
+      <input type="date" class="due-date" name="list[todos_attributes][${index}][due_date]" style="flex:1; padding:8px; border:1px solid #D1D5DB; border-radius:6px;">
       <label style="display:flex; align-items:center; gap:5px; color:#FF4C4C; cursor:pointer;">
         <input type="checkbox" name="list[todos_attributes][${index}][_destroy]"> Remover
       </label>
     `;
     container.appendChild(div);
+
+    // Reanexa o evento e reordena
+    attachDateSort();
+    sortTodosByDate();
   }
+
+  // 🔹 Função que ordena os blocos de tarefas pela data (menor → maior)
+  function sortTodosByDate() {
+    const container = document.getElementById('todos-fields');
+    const todos = Array.from(container.querySelectorAll('.todo-item'));
+
+    todos.sort((a, b) => {
+      const dateA = a.querySelector('.due-date').value || '';
+      const dateB = b.querySelector('.due-date').value || '';
+      return new Date(dateA) - new Date(dateB);
+    });
+
+    todos.forEach(todo => container.appendChild(todo));
+  }
+
+  // 🔹 Liga o evento onchange em todos os inputs de data
+  function attachDateSort() {
+    document.querySelectorAll('.due-date').forEach(input => {
+      input.removeEventListener('change', sortTodosByDate);
+      input.addEventListener('change', sortTodosByDate);
+    });
+  }
+
+  // 🔹 Assim que a página carrega, ele já ordena as tarefas existentes
+  document.addEventListener('DOMContentLoaded', () => {
+    attachDateSort();
+    sortTodosByDate();
+  });
 </script>

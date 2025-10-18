@@ -16,7 +16,7 @@
           <!-- Tarefas -->
           <% if list.todos.any? %>
             <ul class="list-unstyled mt-2">
-              <% list.todos.each do |todo| %>
+              <% list.todos.order(:due_date).each do |todo| %>
                 <li class="d-flex align-items-center mb-1 <%= 'text-decoration-line-through text-muted' if todo.completed %>" id="todo-<%= todo.id %>">
                   <%= check_box_tag "todo_#{todo.id}", todo.id, todo.completed, class: "form-check-input me-2 toggle-todo", data: { url: toggle_list_todo_path(list, todo) } %>
                   <span><%= todo.title %></span>
@@ -45,12 +45,36 @@
   </div>
 <% end %>
 
-<!-- JS para marcar/desmarcar tarefas via AJAX -->
 <script>
+  // Função para ordenar os <li> de uma lista por data (menor primeiro)
+  function sortTodosList(listElement) {
+    const todos = Array.from(listElement.querySelectorAll('li'));
+    
+    todos.sort((a, b) => {
+      const smallA = a.querySelector('small') ? a.querySelector('small').textContent.replace('Prazo: ', '') : null;
+      const smallB = b.querySelector('small') ? b.querySelector('small').textContent.replace('Prazo: ', '') : null;
+
+      const parseDate = str => {
+        if (!str) return new Date(8640000000000000); // data futura se não houver
+        const [d,m,y] = str.split('/');
+        return new Date(`${y}-${m}-${d}`);
+      }
+
+      return parseDate(smallA) - parseDate(smallB);
+    });
+
+    todos.forEach(todo => listElement.appendChild(todo));
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
+    // Ordena todas as listas inicialmente
+    document.querySelectorAll('.card ul').forEach(ul => sortTodosList(ul));
+
+    // Adiciona evento para atualizar via AJAX e reordenar
     document.querySelectorAll('.toggle-todo').forEach(checkbox => {
       checkbox.addEventListener('change', () => {
         const url = checkbox.dataset.url;
+        const listElement = checkbox.closest('ul');
 
         fetch(url, {
           method: 'PATCH',
@@ -58,6 +82,9 @@
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/javascript'
           }
+        }).finally(() => {
+          // Reordena a lista após atualizar
+          sortTodosList(listElement);
         });
       });
     });
