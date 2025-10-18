@@ -3,6 +3,19 @@
   <h1 style="text-align:center; color:#003366; margin-bottom:30px;">Criar Conta</h1>
 
   <%= form_with model: @user, local: true do |f| %>
+    
+    <% if @user.errors.any? %>
+      <div style="margin-bottom:15px; padding:10px; background:#FFEEEE; border:1px solid #FF4C4C; border-radius:5px; color:#B00020;">
+        <ul style="margin:0; padding-left:20px;">
+          <% @user.errors_full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+
+        </ul>
+      </div>
+    <% end %>
+
+
     <div style="margin-bottom:15px;">
       <%= f.label :name, "Nome", style:"display:block; margin-bottom:5px; font-weight:500;" %>
       <%= f.text_field :name, style:"width:100%; padding:10px; border:1px solid #ccc; border-radius:5px;" %>
